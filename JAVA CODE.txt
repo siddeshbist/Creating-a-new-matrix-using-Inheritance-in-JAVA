@@ -1,0 +1,487 @@
+//Siddesh Bist
+//LO5
+//400072076
+//lab 04
+
+
+
+
+package lab04;
+
+/**
+ *
+ * @author User
+ */
+public class Matrix {
+    
+	private int    rowsNum;	// number of rows
+	private int    colsNum;	// number of columns	
+	private int[][]  matrixData;	// integer array to store integer data
+	
+
+	public Matrix( int row, int col ) 
+	{
+            rowsNum = row;
+            colsNum = col;
+            if(row <= 0)
+                rowsNum = 3;
+            if(col <= 0)
+                colsNum = 3;
+            matrixData = new int[rowsNum][colsNum]
+	}
+
+
+public Matrix( int[][] table) 
+	{
+
+		rowsNum = table.length;
+		colsNum = table[0].length;//length of first row gives number of columns
+		matrixData = new int[rowsNum][colsNum]; //  2D array memory allocation
+		for (int i=0; i<rowsNum; i++)
+			for(int j=0; j<colsNum; j++) //fills loop with array values
+				matrixData[i][j] = table[i][j];
+
+	}
+
+
+public boolean setElement(int  x, int i, int j)
+	{
+            if (i<rowsNum && i>=0 && j<colsNum && j>=0)
+            {
+                matrixData[i][j] = x;
+                return true; 
+            }
+            else
+                return false; 
+	}
+
+
+
+public int getElement(int i, int j) throws IndexOutOfBoundsException
+	{
+		
+
+		if  ( (i < rowsNum && i>=0) && (j < colsNum && j>=0)) {
+                    return this.matrixData[i][j];
+		}
+		else {
+			throw new IndexOutOfBoundsException("Invalid indexes");
+		}
+
+	}
+
+
+
+public void addTo( Matrix m ) throws ArithmeticException
+	{
+		
+
+		if ( m.rowsNum == rowsNum && m.colsNum == colsNum)//checks if dimensions of both matrices are equal
+                {
+                    for(int i =0;i<rowsNum;i++) //loops through rows 
+                    {
+                        for(int j=0;j<colsNum;j++) //loops through columns 
+                            matrixData[i][j] += m.matrixData[i][j]; //adds each element of matrix m to this matrix
+                    }
+			
+                
+		}
+		else {
+			throw new ArithmeticException("Invalid operation");
+		}
+
+	}
+
+
+public Matrix copy()
+	{
+           
+		return new Matrix(matrixData);
+	}
+
+
+
+	      	
+public boolean isUpperTr(){
+            
+            int flag = 0;
+            for(int i =0;i<rowsNum; i++) 
+            {
+                for(int j=0;j<i;j++) 
+                {
+                    if (matrixData[i][j]!=0) //checks if elements of lower left corner of matrix is not 0 
+                    {
+                        flag = 1; //if any element if not 0, then counter is changed 
+                        break; //matrix is not upper triangular
+                    }
+                }
+            }
+            if (flag ==0){ //if count is 0, the matrix is upper triangular 
+                return true; 
+            }
+            else 
+                return false;            
+        }
+
+ 
+
+
+
+ public Matrix subMatrix(int i, int j) throws ArithmeticException
+        {
+	    int row2;
+            int col2;           
+	    Matrix submatrix = new Matrix(i+1,j+1); // new matrix of size i+1 by j+1 is created
+            if (i<rowsNum && i>=0 && j<colsNum && j>=0) //checks if i and j are valid indicies 
+            {
+                for(row2 =0;row2<i+1;row2++) //rows upto i+1
+                {
+                    for(col2 = 0;col2<j+1;col2++)//loops through columns upto j+1
+                    {
+                        submatrix.matrixData[row2][col2] = matrixData[row2][col2]; //each element of this matrix is input into submatrix 
+                    }
+                }
+                return submatrix;
+            }
+            else
+            {
+                throw new ArithmeticException("Submatrix not defined"); //error if i and j are not valid 
+            }
+        }   
+
+
+
+
+
+public static Matrix sum(Matrix[] matArray) throws ArithmeticException
+        {
+            int o = matArray.length; //obtaing length of matArray 
+            int count = 1; 
+            for(int i = 1; i <o; i++) //loops through matArray 
+            {
+                if (matArray[i].rowsNum == matArray[0].rowsNum && matArray[i].colsNum == matArray[0].colsNum) //checks if each matrix is matArray is of the same dimensions
+                {
+                    count += 1; //1 to count added if dimension match
+                }
+            }
+            if(count ==o) //dimensions are equal 
+            {
+                for(int i=1; i<o;i++)
+                {
+                    matArray[0].addTo(matArray[i]); //each matrix in matArray is added
+                }
+            }
+            else
+            {
+                throw new ArithmeticException("Dimensions of matricies do not match"); 
+            }
+            
+            return matArray[0];
+        }
+
+
+
+
+
+
+
+public String toString(  )
+	{
+		
+
+		String output = new String(); // empty string created
+        	for(int i = 0; i < rowsNum; i++){
+        		for(int j = 0; j < colsNum; j++){
+        			output += matrixData[i][j] + "  ";
+        		}
+        	output += "\n";
+        	}
+       		 return output;
+
+	}
+        
+	 public int[][] getmatrixData()
+        {
+            return this.matrixData;
+        }
+
+        public int getcolsNum()
+        {
+            return this.colsNum;
+        }
+       
+ 	public int getrowsNum()
+        {
+            return this.rowsNum;
+        }
+}
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package lab04;
+
+/**
+ *
+ * @author User
+ */
+public class UpperTriangularMatrix {
+    private int mSize; //size of uppertriangle matrix
+    private int[] mElements; //1D array storing elements in upper right corner of matrix 
+    
+    public UpperTriangularMatrix(int d)
+    {
+        if (d<= 0)
+        {
+            d = 1; //changes n to 1 if n is negative or 0
+        }
+        mSize = d;
+        int size = d*(d+1)/2; //determines the size of matElements, the 1D array 
+        mElements = new int[size]; //array mElements is created with allocated size and initialized to 0
+    }
+
+
+ public UpperTriangularMatrix(Matrix upTriM) throws IllegalArgumentException
+    {
+  	int a = upTriM.getcolsNum(); //get the number of columns of matrix M      
+	int b = upTriM.getrowsNum(); //get the number of rows of matrix M
+        
+                
+        if( upTriM.isUpperTr() == true && a==b) //checks if m is an uppertriangle matrix and if it is a square matrix 
+        {
+            mSize = a; //size of the uppertriangle matrix is the number of rows in m
+            int size = a*(a+1)/2; //determines size of 1D array matElements 
+            mElements = new int[size]; 
+            int k =0; //starting index value for mElements
+            for(int i =0; i<a;i++)
+            {
+                for(int j =0; j<b;j++)
+                {
+                    if(j>=i) //checks if the element in m is higher or equal to an element on the diagonal 
+                    {
+                        mElements[k] = upTriM.getmatrixData()[i][j]; //every element above the diagonal is input into matElements
+                        k++; 
+                                
+                    }
+                }
+            }
+        }
+        else 
+        {
+            throw new IllegalArgumentException("The matrix is not Upper Triangular");
+        }
+    }
+
+public int getElement(int i, int j) throws IndexOutOfBoundsException
+    {     
+        if (i<mSize && i>=0 && j<mSize && j>=0) //checks if i and j are within the parameters of the size of the matrix 
+        {
+            return fullMatrix().getElement(i,j); //creates the full matrix of this uppertrianglematris 
+                                                    // and uses get element from matrix class
+            
+        }
+        else
+        {
+            throw new IndexOutOfBoundsException("Invalid Index"); //exception if i and j are not within correct parameters of this matrix
+        
+        }
+    }
+
+
+
+
+
+
+ public int getDim()
+    {
+        return mSize; //obtains the size of upper matrix
+    }
+
+
+
+    
+ public void setElement(int x, int i, int j) throws IndexOutOfBoundsException, IllegalArgumentException
+    {
+        
+        int flag = 0; //index in 1D array matElements 
+        if(i<mSize && i>=0 && j <mSize && j>=i) //checks if i and j are within the matrix dimension 
+        { 
+            for(int y =0;y<mSize;y++) //loops through row 
+            {
+                
+                for(int z=0;z<mSize;z++) //loops through columnn
+                {
+                    
+		if(z<=y)
+                    {
+                        mElements[flag] =0; //any element in lower left triangle matrix is 0 regardless of input 
+                    }
+		
+
+		else
+                    {
+                        
+                        if(y==i && z==j) //checks if i and j are found 
+                    {
+                       matElements[flag] = x; 
+                       
+                    }
+                    flag++; //if position in 1D array does not match input,increases flag by 1
+                    }
+                    
+                    
+                }
+            }
+        }
+            
+        else if(i>mSize && i<=0 && j >mSize && j>i && x==0)
+        {
+            throw new IndexOutOfBoundsException("Invalid Indexes"); 
+        }
+        else
+        {
+            throw new IllegalArgumentException("Incorrect Argument"); 
+	}
+}
+        	    
+    
+
+ public void print1DArray()
+    {
+        int f = mSize*(mSize+1)/2; //obtains the size of the 1D array mElements 
+        for(int i=0;i<f;i++)
+        {
+            System.out.print(this.mElements[i] + "  "); //prints each element in mElements
+        }
+    } 
+
+
+
+
+
+public Matrix fullMatrix()
+    {
+        Matrix full = new Matrix(mSize,mSize); //creates new matrix 
+        int k =0; // index of matElements, 1D array 
+        for(int i = 0;i<mSize;i++)
+        {
+            for(int j =0; j<mSize;j++)
+            {
+                
+	
+ 	if(j<i) //checks if the element is in a position below the diagonal
+                {
+                    full.getmatrixData()[i][j] = 0; //all elements below the diagonal are set to 0
+                    //full.setElement(0,i,j);
+                }
+
+
+	else if(j>=i) //checks if element is in a position higher than or equal to the diagonal 
+                {
+                    //full.getmatrixData()[i][j] = this.mElements[k];
+                    full.setElement(matElements[k],i,j); 
+                    k++;
+                }
+                
+                    
+            }
+        }
+        return full; 
+    }
+            
+
+public String toString()
+    {
+        String out = new String();
+       
+        
+        for(int i = 0; i < mSize; i++) //loops through th ematrix 
+        {
+            for(int j = 0; j < mSize; j++)
+            {
+                out += fullMatrix().getElement(i, j) + "  "; //obtains full matrix and uses get element 
+            }
+            out += "\n"; //new line after each row 
+        }
+        return output;
+        
+    }
+
+
+
+
+
+ public int getDet()
+    {        
+        int determinant =1;
+        for(int i=0;i<mSize;i++) //loops through rows 
+        {
+            for(int j =0;j<mSize;j++) //loops through columns 
+            {
+                if(j==i) //checks if the position is a diagonal element 
+                {
+                    determinant*=fullMatrix().getElement(i,i); //multiplies all diagonal elements for det 
+                }
+            }
+        }
+        return determinant;
+        
+    }
+
+
+  
+public double[] effSolve(double[] v) throws IllegalArgumentException
+    {
+        int determinant =1;
+        for(int i=0;i<mSize;i++)
+        {
+            for(int j =0;j<mSize;j++)
+            {
+                if(j==i)
+                {
+                    determinant*=fullMatrix().getElement(i,i);
+                }
+            }
+        }
+        
+        double[] x = v; 
+        
+        if(determinant!=0 &&v.length ==mSize)
+        {
+            int a = mElements.length-1;
+            int c = mSize-1;
+            
+            for(int d=c;c>=0;c--) //loops throught the size of b and x
+            {
+                x[c] = v[d]; //assigns each each inital element of x to b
+                for (int j=c;j>s;j--) 
+                {
+                    x[d] -= (x[j]*mElements[a]); //subtracts all elements multiplied by their coeffecient that precede the s index value  
+                    a--; //subtracts k
+                }
+                
+                x[d] = (x[d])/mElements[a];
+                a--;    
+                }
+            }
+        else if(det==0) //determinant is 0 if det is 0 
+        {
+            throw new IllegalArgumentException("The determinant of A is 0");
+            
+        }
+        else 
+        {
+            throw new IllegalArgumentException("Invalid dimensions of v");
+        }
+        return x;
+    }    
+}
+
+
+
+
+
+
+  
